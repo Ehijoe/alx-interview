@@ -4,8 +4,8 @@
 
 def canUnlockAll(boxes):
     """Check if all boxes can be unlocked."""
-    checked: set = set()
-    to_check: list = [0]
+    checked = set()
+    to_check = [0]
 
     while len(to_check) != 0:
         box = to_check.pop(0)
