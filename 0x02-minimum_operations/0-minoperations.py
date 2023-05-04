@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """Function to find the minimum number of operations."""
 
 
 def minOperations(n: int) -> int:
     """Find the minimum number of copy and paste operations to fill a file."""
-    if n > 1:
+    if n < 1:
         return 0
     ops = 0
     div = 2
