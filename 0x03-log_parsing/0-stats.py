@@ -7,8 +7,8 @@ import re
 ip_regex = r"((\d{1,3}\.){3}\d{1,3})"
 date_regex = r"\[(.*)\]"
 verb_regex = r"\"GET /projects/260 HTTP/1\.1\""
-status_regex = r"(200|301|400|401|403|404|405|500)"
-size_regex = r"(\d+)"
+status_regex = r"(\w+)"
+size_regex = r"(\w+)"
 pattern = re.compile("^{} - {} {} {} {}$".format(
     ip_regex,
     date_regex,
@@ -26,9 +26,11 @@ def process(lines, stat_count):
         if match is not None:
             try:
                 size += int(match.group(5))
+                status = int(match.group(4))
             except (ValueError, TypeError):
                 pass
-            stat_count[int(match.group(4))] += 1
+            if status in stat_count:
+                stat_count[status] += 1
     return size
 
 
