@@ -1,67 +1,40 @@
 #!/usr/bin/python3
-"""Log Parser."""
-import sys
+"""Performs log parsing from stdin"""
+
 import re
-
-ip_regex = r"((\d{1,3}\.){3}\d{1,3})"
-date_regex = r"\[(.*)\]"
-verb_regex = r"\"GET /projects/260 HTTP/1\.1\""
-status_regex = r"(\w+)"
-size_regex = r"(\w+)"
-pattern = re.compile("^{} - {} {} {} {}$".format(
-    ip_regex,
-    date_regex,
-    verb_regex,
-    status_regex,
-    size_regex,
-))
-
-statuses = [200, 301, 400, 401, 403, 404, 405, 500]
+import sys
+counter = 0
+file_size = 0
+statusC_counter = {200: 0, 301: 0, 400: 0,
+                   401: 0, 403: 0, 404: 0, 405: 0, 500: 0}
 
 
-def process(lines, stat_count):
-    """Process a list of log lines and return the total file_size."""
-    size = 0
-    for line in lines:
-        match = pattern.match(line)
-        if match is not None:
-            try:
-                size += int(match.group(5))
-                status = int(match.group(4))
-            except (ValueError, TypeError):
-                pass
-            if status in stat_count:
-                stat_count[status] += 1
-    return size
+def printCodes(dict, file_s):
+    """Prints the status code and the number of times they appear"""
+    print("File size: {}".format(file_s))
+    for key in sorted(dict.keys()):
+        if statusC_counter[key] != 0:
+            print("{}: {}".format(key, dict[key]))
 
 
-def print_info(stat_count, size):
-    """Print the info from the logs."""
-    print("File size: {}".format(size))
-    for stat in statuses:
-        if stat_count[stat] > 0:
-            print("{}: {}".format(stat, stat_count[stat]))
-
-
-def main():
-    """Parse a log file."""
-    to_process = []
-    size = 0
-    status_count = dict()
-    for status in statuses:
-        status_count[status] = 0
+if __name__ == "__main__":
     try:
         for line in sys.stdin:
-            to_process.append(line)
-            if len(to_process) == 10:
-                size += process(to_process, status_count)
-                print_info(status_count, size)
-                to_process = []
+            split_string = re.split('- |"|"| " " ', str(line))
+            statusC_and_file_s = split_string[-1]
+            if counter != 0 and counter % 10 == 0:
+                printCodes(statusC_counter, file_size)
+            counter = counter + 1
+            try:
+                statusC = int(statusC_and_file_s.split()[0])
+                f_size = int(statusC_and_file_s.split()[1])
+                # print("Status Code {} size {}".format(statusC, f_size))
+                if statusC in statusC_counter:
+                    statusC_counter[statusC] += 1
+                file_size = file_size + f_size
+            except:
+                pass
+        printCodes(statusC_counter, file_size)
     except KeyboardInterrupt:
-        size += process(to_process, status_count)
-        print_info(status_count, size)
+        printCodes(statusC_counter, file_size)
         raise
-
-
-if __name__ == '__main__':
-    main()
