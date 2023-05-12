@@ -39,7 +39,8 @@ def print_info(stat_count, size):
     """Print the info from the logs."""
     print("File size: {}".format(size))
     for stat in statuses:
-        print("{}: {}".format(stat, stat_count[stat]))
+        if stat_count[stat] > 0:
+            print("{}: {}".format(stat, stat_count[stat]))
 
 
 def main():
