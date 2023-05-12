@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 """Log Parser."""
 import sys
-from collections import OrderedDict
 import re
 
 ip_regex = r"((\d{1,3}\.){3}\d{1,3})"
@@ -16,6 +15,8 @@ pattern = re.compile("^{} - {} {} {} {}$".format(
     status_regex,
     size_regex,
 ))
+
+statuses = [200, 301, 400, 401, 403, 404, 405, 500]
 
 
 def process(lines, stat_count):
@@ -37,16 +38,15 @@ def process(lines, stat_count):
 def print_info(stat_count, size):
     """Print the info from the logs."""
     print("File size: {}".format(size))
-    for stat, count in stat_count.items():
-        print("{}: {}".format(stat, count))
+    for stat in statuses:
+        print("{}: {}".format(stat, stat_count[stat]))
 
 
 def main():
     """Parse a log file."""
     to_process = []
     size = 0
-    statuses = [200, 301, 400, 401, 403, 404, 405, 500]
-    status_count = OrderedDict()
+    status_count = dict()
     for status in statuses:
         status_count[status] = 0
     try:
