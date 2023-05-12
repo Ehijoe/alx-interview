@@ -59,6 +59,7 @@ def main():
     except KeyboardInterrupt:
         size += process(to_process, status_count)
         print_info(status_count, size)
+        raise
 
 
 if __name__ == '__main__':
