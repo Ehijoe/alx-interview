@@ -1,18 +1,20 @@
 #!/usr/bin/node
-const argv = process.argv
+const argv = process.argv;
 const request = require('request');
 
 request(`https://swapi-api.alx-tools.com/api/films/${argv[2]}`, (err, resp, body) => {
-  const film_data = JSON.parse(body);
-  const characters = film_data.characters;
-  const character_names = {};
+  if (err) console.log(err);
+  const filmData = JSON.parse(body);
+  const characters = filmData.characters;
+  const characterNames = {};
   let received = 0;
-  for (const character of film_data["characters"]) {
+  for (const character of filmData.characters) {
     request(character, (err, resp, body) => {
-      character_names[character] = JSON.parse(body).name;
+      if (err) console.log(err);
+      characterNames[character] = JSON.parse(body).name;
       received += 1;
       if (received === characters.length) {
-        characters.map((url) => { console.log(character_names[url]); });
+        characters.forEach((url) => { console.log(characterNames[url]); });
       }
     });
   }
