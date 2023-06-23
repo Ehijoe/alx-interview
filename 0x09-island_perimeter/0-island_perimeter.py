@@ -4,6 +4,8 @@
 
 def safe_get(grid, i, j):
     """Get the value at a cell in a grid without throwing an error."""
+    if i < 0 or j < 0:
+        return 0
     try:
         return grid[i][j]
     except IndexError:
@@ -27,5 +29,6 @@ def island_perimeter(grid):
     for i, row in enumerate(grid):
         for j, cell in enumerate(row):
             if cell == 1:
+                print(cell, i, j)
                 perimeter += check_borders(cell, grid, i, j)
     return perimeter
