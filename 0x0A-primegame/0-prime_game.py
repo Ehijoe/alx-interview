@@ -13,6 +13,8 @@ def playRound(n, primes):
 
 def isWinner(x, nums):
     """Get the overall winner of the prime game."""
+    if len(nums) == 0:
+        return None
     highest = max(nums)
     if highest == 1:
         return "Ben"
@@ -34,5 +36,7 @@ def isWinner(x, nums):
         count[playRound(n, prime_winner)] += 1
     if count["Ben"] > count["Maria"]:
         return "Ben"
-    else:
+    elif count["Maria"] > count["Ben"]:
         return "Maria"
+    else:
+        return None
