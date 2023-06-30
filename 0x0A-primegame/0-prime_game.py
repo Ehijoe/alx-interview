@@ -13,6 +13,8 @@ def playRound(n, primes):
 
 def isWinner(x, nums):
     """Get the overall winner of the prime game."""
+    if x <= 0:
+        return None
     if len(nums) == 0:
         return None
     highest = max(nums)
